@@ -21,6 +21,7 @@ class MyNewsFrame(customtkinter.CTkScrollableFrame):
 
         self.gamingArticleDescriptionField = customtkinter.CTkTextbox(master=self, width=300, height=200, fg_color="gray15", border_color="gray25", border_width=2.5)
         self.gamingArticleDescriptionField.pack(pady=2)
+        self.gamingArticleDescriptionField.insert(index="0.0", text="Article One-Liner")
 
         self.techLabel = customtkinter.CTkLabel(self, fg_color="gray12", font=('Roboto', 18), text="This Week In Tech")
         self.techLabel.pack(pady=(30, 0))
@@ -34,6 +35,9 @@ class MyNewsFrame(customtkinter.CTkScrollableFrame):
         self.techArticleLinkField = customtkinter.CTkEntry(master=self, width=250, height=10, placeholder_text="Article URL")
         self.techArticleLinkField.pack(pady=2)
 
+        self.techArticleDescriptionField = customtkinter.CTkTextbox(master=self, width=300, height=200, fg_color="gray15", border_color="gray25", border_width=2.5)
+        self.techArticleDescriptionField.pack(pady=2)
+        self.techArticleDescriptionField.insert(index="0.0", text="Article One-Liner")
 
 class MyEventsFrame(customtkinter.CTkScrollableFrame):
     def __init__(self, master, **kwargs):
@@ -57,6 +61,7 @@ class MyEventsFrame(customtkinter.CTkScrollableFrame):
         self.imageFields.append(self.newImageField)
 
         self.newDescriptionField = customtkinter.CTkTextbox(master=self, width=300, height=200, fg_color="gray15", border_color="gray25", border_width=2.5)
+        self.newDescriptionField.insert("0.0", text="Event Description")
         self.descriptionFields.append(self.newDescriptionField)
 
     def refresh(self):
@@ -68,8 +73,7 @@ class MyEventsFrame(customtkinter.CTkScrollableFrame):
             self.titleFields[i].pack(pady=2)
             self.imageFields[i].pack(pady=2)
             self.descriptionFields[i].pack(pady=2)
-            
-
+    
 class App(customtkinter.CTk):
     def __init__(self):
         super().__init__()
