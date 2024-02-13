@@ -1,6 +1,7 @@
 import tkinter
+from tkinter import filedialog
 import customtkinter
-import datetime
+from generator import generate
 
 eventCounter = 1
 
@@ -86,20 +87,21 @@ class App(customtkinter.CTk):
         self.newsFrame = MyNewsFrame(master=self, width=500, height=500, corner_radius=10, fg_color="gray12")
         self.newsFrame.place(anchor='nw', relx=0.52, rely=0.1)
 
+        self.dateField = customtkinter.CTkEntry(master=self, height=10, placeholder_text="Date")
+        self.dateField.place(anchor="ne", relx=0.48, rely=0.02)
+        self.gifField = customtkinter.CTkEntry(master=self, height=10, width=340, placeholder_text="Gif of the week Link")
+        self.gifField.place(anchor="nw", relx=0.52, rely=0.02)
+
+        self.submitButton = customtkinter.CTkButton(master=self, text="Generate", command=submit)
+        self.submitButton.place(anchor="se", rely=0.98, relx=0.926)
+
+        self.addEventButton = customtkinter.CTkButton(master=self, text="New Event", command=addEvent)
+        self.addEventButton.place(anchor="ne", relx=0.48, rely=0.85)
+
 def load():
     for widget in app.winfo_children():
         widget.destroy
 
-    dateField = customtkinter.CTkEntry(app, height=10, placeholder_text="Date")
-    dateField.place(anchor="ne", relx=0.48, rely=0.02)
-    gifField = customtkinter.CTkEntry(app, height=10, width=340, placeholder_text="Gif of the week Link")
-    gifField.place(anchor="nw", relx=0.52, rely=0.02)
-
-    submitButton = customtkinter.CTkButton(app, text="Generate")
-    submitButton.place(anchor="se", rely=0.98, relx=0.926)
-
-    addEventButton = customtkinter.CTkButton(app, text="New Event", command=addEvent)
-    addEventButton.place(anchor="ne", relx=0.48, rely=0.85)
     app.eventsFrame.addEventFields()
     app.eventsFrame.refresh()
 
@@ -108,6 +110,53 @@ def addEvent():
     eventCounter = eventCounter+1
     app.eventsFrame.addEventFields()
     app.eventsFrame.refresh()
+
+def submit():
+    eventTitleFields = app.eventsFrame.titleFields
+    eventDateFields = app.eventsFrame.dateFields
+    eventImageFields = app.eventsFrame.imageFields
+    eventDescriptionFields = app.eventsFrame.descriptionFields
+
+    titles = []
+    dates = []
+    images = []
+    descriptions = []
+
+    for i in range(eventCounter):
+        titles.append(eventTitleFields[i].get())
+        dates.append(eventDateFields[i].get())
+        images.append(eventImageFields[i].get())
+        descriptions.append(eventDescriptionFields[i].get(1.0, "end-1c"))
+    
+    gamingTitle = app.newsFrame.gamingTitleField.get()
+    gamingImage = app.newsFrame.gamingImageField.get()
+    gamingLink = app.newsFrame.gamingArticleLinkField.get()
+    gamingText = app.newsFrame.gamingArticleDescriptionField.get(1.0, "end-1c")
+
+    techTitle = app.newsFrame.techTitleField.get()
+    techImage = app.newsFrame.techImageField.get()
+    techLink = app.newsFrame.techArticleLinkField.get()
+    techText = app.newsFrame.techArticleDescriptionField.get(1.0, "end-1c")
+
+    date = app.dateField.get()
+    gifLink = app.gifField.get()
+
+    html = generate(date=date, gifLink=gifLink, eventDates=dates, eventTitles=titles,
+                    eventImages=images, eventDescriptions=descriptions,
+                    gamingTitle=gamingTitle, gamingLink=gamingLink,
+                    gamingImage=gamingImage, gamingDescription=gamingText,
+                    techTitle=techTitle, techLink=techLink,
+                    techImage=techImage, techDescription=techText)
+    
+    filePath = filedialog.asksaveasfilename(defaultextension=".html", filetypes=[("HTML", "*.html"), ("Text file", "*.txt"), ("All files", "*.*")])
+    if filePath:
+        try:
+            with open(filePath, 'w') as file:
+                file.write(html)
+        except Exception as e:
+            app.submitButton._text = e
+            
+
 
 if __name__ == "__main__":
     # Settings
